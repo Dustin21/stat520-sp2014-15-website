@@ -4,7 +4,7 @@ title: "Lecture 10: Reversible jump MCMC"
 category: 'Lecture'
 ---
 Instructor: Alexandre Bouchard-C&ocirc;t&eacute;   
-Editor: TBA
+Editor: Dustin Johnson - 11338118
 
 ### Motivation for Reversible jump MCMC (RJMCMC)
 
@@ -71,7 +71,21 @@ This creates the following auxiliary latent space:
    - Return $v^\star = m \cdot v$.
 - Compute the MH ratio for this proposal.
 
+**Wrong view:** Under classical MCMC (MH), the acceptance ratio would be computed as the ratio of the likelihood of the proposal to the likelihood of the previous configuration:
+
+$$r = \frac{\pi(v^*)}{\pi(v)}\frac{q_m(\frac{1}{m})}{q_m(m)} = \exp(v - v^*)m^2$$
+
+Now, we face the issue of comparing likelihoods of different dimensions, where the proposed $q(x\mid x')$ and previous $q(x'\mid x)$ configurations are not the same dimension. This renders the classical MCMC meaningless. There are two views that enable us to circumvent this issue.
+
 **First view:** computing $q(v^\star\mid v)$...
+
+**First view:** computing $q(v^\star\mid v)$...
+
+$$r = \frac{\pi(v^*)}{\pi(v)} \frac{q(v|v^*)}{q(v^*|v)} = exp(v - v^*)m$$
+
+where, 
+
+$$Q(V' \leq v' | V) = \mathbb P(M \leq \frac{v'}{v} | V) \implies q(v'|v) = \frac{v'}{v}\frac{d}{dv'}(\frac{v'}{v}) = v$$
 
 **Second view:**
 
@@ -94,6 +108,10 @@ RJMCMC works similarly to the second view of MH, with the difference that:
 - We many need more than one $\Psi\_j$, selected at random according to some probabilities $\rho\_{\cdot\to j}$.
 
 **Dimensionality matching:** a necessary conditions for the mapping to be diffeomorphic is that the input dimensionality of $\Psi$ should match the output dimensionality of $\Psi$.
+
+<img src="{{ site.url }}/images/dim_matching.png" alt="Drawing" style="width: 400px; float: center"/>
+
+The figure (C. Andrieu et al.) above demonstrates the aspect of dimensionality matching by comparing a 1D model with a 2D model. The first model must be mapped such that both models can be compared by a common measure. 
 
 **Consequence:** let us say that we want to "jump" from a model with $m\_1$ dimensions into one with $m\_2$ dimensions. What constraints do we have on the number $n\_1$ of auxiliary variables we add to the first model, and the number $n\_2$ we add to the second? 
 
